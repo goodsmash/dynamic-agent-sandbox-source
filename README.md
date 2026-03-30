@@ -36,24 +36,46 @@ Qwen → Cloudflare Workers AI → Ollama + 11 More Providers
 - **Cloudflare Workers Deployment**: Global edge execution with V8 isolates (not simulation)
 - **Persistent Database**: PostgreSQL + D1 (SQLite) for production at edge
 
-## 🚀 Quick Start
+## 🚀 Quick Start (All Platforms)
 
+### 1. Setup
 ```bash
-# Clone the complete autonomous platform
+# Clone the autonomous AI platform
 git clone https://github.com/goodsmash/dynamic-agent-sandbox-source.git
 cd dynamic-agent-sandbox-source
 
-# Run the developer environment
-pnpm install
-pnpm run dev
+# Install packages (cross-platform)
+npx pnpm install
 
-# Configure one AI provider (free options available)
-echo "OPENAI_API_KEY=sk-..." > .env
-# OR: GROQ_API_KEY=gsk_... (most generous free tier)
-# OR: ANY provider key from the 24 available
+# Database: PostgreSQL (full) OR SQLite (quick)
+set USE_SQLITE=true  # Windows
+# OR
+export USE_SQLITE=true  # Unix/macOS
+```
 
-# Launch at http://localhost:5173
-# Click NEW SESSION → Select agent → Run commands
+### 2. AI Provider Setup (Choose Any)
+```bash
+# Get free API keys from these providers:
+set GROQ_API_KEY=gsk-...      # Windows - most generous free tier
+# OR set OPENAI_API_KEY=sk-...
+# OR set ANTHROPIC_API_KEY=sk-ant-api03-...
+
+export GROQ_API_KEY=gsk-...   # Unix/macOS
+```
+
+### 3. Platform-Specific Start
+```bash
+# WINDOWS - One command to run everything
+node start-dev.js
+
+# UNIX/MACOS - Native commands work
+node start-dev-nix.sh
+```
+
+### 4. Open Browser
+```
+Frontend:  http://localhost:5173  
+API Server: http://localhost:8080/docs
 ```
 
 ## 🧠 Agent Personalities (Proven in Production)
@@ -380,3 +402,41 @@ Sessions communicate via JSON messages:
 **🚀 Ready**: `git clone && pnpm install && pnpm run dev`  
 
 *Built with React + Node.js + PostgreSQL + Cloudflare. Deployed to global edge.*
+
+## 🔧 Cross-Platform Compatibility
+
+### Windows, macOS, Linux Environment Support
+
+**Platform Detection**: Automatic detection of OS with appropriate scripts  
+**Shell Commands**: Unix shell commands with Windows equivalents  
+**Build Tools**: Vite/Rollup platform-specific binary selection  
+**Environment Variables**: Cross-platform environment variable syntax  
+**Process Management**: Background process compatibility across platforms  
+
+### Environment Setup Options
+
+**A. PostgreSQL** - Full production database (recommended)  
+```bash
+# Use existing PostgreSQL
+# Windows: set DATABASE_URL=postgresql://localhost:5432/openclaw  
+# Unix: export DATABASE_URL="postgresql://localhost:5432/openclaw"
+```
+
+**B. SQLite** - Zero-config development
+```bash  
+# No database server required
+set USE_SQLITE=true  # Windows
+export USE_SQLITE=true  # Unix/macOS
+```
+
+### Platform-Specific Start Commands
+
+```bash
+# Windows - One command handles everything
+node start-dev.js
+
+# Unix/macOS - Native compatibility  
+npm run dev  # (or use start-dev.sh)
+```
+
+**Setup Guide**: Detailed platform instructions in `/PLATFORM_SETUP_GUIDE.md

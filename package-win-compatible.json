@@ -1,0 +1,23 @@
+{
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node start-dev.js",
+    "dev-nix": "export NODE_ENV=development && pnpm run build && pnpm run start-all",
+    "dev-win": "set NODE_ENV=development && pnpm run build && pnpm run start-all",
+    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "start-all": "pnpm run start-api && pnpm run start-frontend",
+    "start-api": "cd artifacts/api-server && set NODE_ENV=development && node --enable-source-maps ./dist/index.mjs",
+    "start-frontend": "cd artifacts/agent-sandbox && set NODE_ENV=development && node start-frontend.js",
+    "quick-start": "npx pnpm install && node start-dev.js",
+    "platform-info": "echo Running on: %OS% && node -e \"console.log('Node:', process.version, 'Platform:', process.platform)\""
+  },
+  "private": true,
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "prettier": "^3.8.1"
+  }
+}
