@@ -1,0 +1,26 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "L4UpZ0Gkl1oHuQ9L-GNt8"
+uri = "file://.canvas/assets/openclaw-platform.tar.gz"
+type = "unspecified"
+title = "OpenClaw Platform — Full Source Code (v2.0.0)"
+
+[[outputs]]
+id = "Lvf8vhstBFzWz2oNRjuHe"
+uri = "file://openclaw-platform.zip"
+type = "unspecified"
+title = "openclaw-platform.zip — Complete Project (232 files, 2.8MB)"
+
+[[outputs]]
+id = "qqjsx6N4y-Plzt4lxiJSb"
+uri = "file://openclaw-platform-full.zip"
+type = "unspecified"
+title = "OpenClaw Platform — Complete Source (frontend + backend + Cloudflare worker)"
+
+[[outputs]]
+id = "pOaLdPGm9hyKXtRDvBOac"
+uri = "file://openclaw-sandbox-export.zip"
+type = "unspecified"
+title = "OpenClaw AI Agent Sandbox — Full Project Export"

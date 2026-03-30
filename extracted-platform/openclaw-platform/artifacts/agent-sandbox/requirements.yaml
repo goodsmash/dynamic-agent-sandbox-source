@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For fluid terminal animations, task list reveals, and page transitions"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to merge tailwind classes without style conflicts"
+  "date-fns": "For formatting timestamps in the session and task histories"
+
+images:
+  - path: "artifacts/agent-sandbox/public/images/architecture-diagram.png"
+    description: "Dark mode neon wireframe diagram showing a central dispatcher router sending tasks to multiple isolated hexagonal worker nodes, glowing green and purple connections, cyber hacker aesthetic, highly technical"
+    aspect_ratio: "16:9"
+  - path: "artifacts/agent-sandbox/public/images/hero-bg.png"
+    description: "Abstract dark background with glowing faint green grid lines and subtle binary code falling in the background, matrix hacker aesthetic, deep blacks and dark grays"
+    aspect_ratio: "16:9"
+
+notes:
+  - "Assuming @workspace/api-client-react is available for React Query hooks as specified in the implementation notes."
+  - "Using a custom built React terminal UI instead of xterm.js for better React integration and styling control while maintaining the requested hacker aesthetic."

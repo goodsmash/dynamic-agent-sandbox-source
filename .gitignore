@@ -1,0 +1,37 @@
+# Secrets and credentials
+.github_token
+.env
+*.key
+*.pem
+*.p12
+*.crt
+*.csr
+config.local.json
+.env.local
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Desktop.ini
+$RECYCLE.BIN/
+
+# Replit specific
+.replit-dep-bundle*
+
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Zone identifier files (Windows)
+*Zone.Identifier*

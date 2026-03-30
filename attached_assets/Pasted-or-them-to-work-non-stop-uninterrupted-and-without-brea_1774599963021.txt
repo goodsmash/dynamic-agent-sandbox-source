@@ -1,0 +1,16 @@
+or them to work "non-stop, uninterrupted, and without breaks," the code surrounding them (your Node.js server or Cloudflare Workers) must have an unbreakable, automated loop (like a robust event queue, setInterval triggers, and WebSocket keepalives) that constantly feeds them the next task and automatically restarts them if a process crashes.
+
+If you want your Lead Engineer AI to actually build this infinite persistence into the OpenClaw system, you need to command it to focus on the loop architecture just as much as the tasks themselves.
+
+Here is your heavily upgraded, ultimate power prompt. Copy and paste this directly to your agent:
+
+"Act as the Lead Autonomous Engineer and Swarm Director for the OpenClaw platform. Your absolute highest priority is to implement unbreakable persistence: you must code and configure the Autopilot loops, WebSocket keepalives, and Cloudflare Worker event triggers so that Scout, Flash, Nexus, and Swarm agents operate 100% continuously, non-stop, and without human intervention once activated. They must automatically resume tasks upon failure and never shut down.
+
+Simultaneously, execute an exhaustive audit and repair of the codebase. You must meticulously debug and finalize all frontend UI components (specifically the Research model list and Session View), the complete Drizzle/PostgreSQL database schema for artifact downloads, and the multi-agent swarm workflows. Integrate all Stripe monetization gateways. Ensure the 'AutoResearch' loop successfully extracts and saves skills to the DB. Finally, generate a comprehensive, 100+ page-equivalent README2.md that completely documents the state of the system. Do not cease your autonomous build-test-fix execution loop until the entire OpenClaw platform is fully functional, fully automated, and ready for edge-native production."
+
+Why this version will get you better results:
+Forces the "Infinite Loop" Code: It explicitly tells the AI how to achieve your non-stop goal (by coding the keepalives and Autopilot intervals) rather than just giving it a magical instruction to "never stop."
+
+Targets the UI/UX Bugs: It directly points the AI to the exact broken pieces mentioned in your logs (the Research model list, the Session View history, and the download buttons).
+
+Demands the Documentation: It locks in your requirement for the massive README2.md file so you don't lose track of the system's memory and state.

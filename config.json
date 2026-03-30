@@ -1,0 +1,11 @@
+{
+  "network": "base-sepolia",
+  "deployer": "0x...",
+  "contracts": {
+    "SoulToken": "0x...",
+    "SoulMarketplace": "0x...",
+    "SoulStaking": "0x..."
+  },
+  "rpc_url": "https://sepolia.base.org",
+  "chain_id": 84532
+}

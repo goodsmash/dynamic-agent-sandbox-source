@@ -1,0 +1,115 @@
+Access: Apps
+Access: Apps and Policies
+Access: Audit Logs
+Access: Custom Pages
+Access: Device Posture
+Access: Groups
+Access: Identity Providers
+Access: Keys
+Access: Mutual TLS Certificates
+Access: Organizations
+Access: Organizations, Identity Providers, and Groups
+Access: Policies
+Access: Policy Test
+Access: Populations
+Access: SCIM Logs
+Access: Service Tokens
+Access: SSH Auditing
+Access: Tags
+Access: Users
+Account Analytics
+Account Custom Pages
+Account Filter Lists
+Account Firewall Access Rules
+Account Rulesets
+Account Security Center Insights
+Account Settings
+Account WAF
+Account Waiting Room
+Account: SSL and Certificates
+Address Maps
+AI Gateway
+AI Search
+Allow Request Tracer
+API Gateway
+API Tokens
+Application Security Reports
+Billing
+Browser Rendering
+Bulk URL Redirects
+China Network Steering
+Client-side security
+Cloudchamber
+Cloudflare Calls
+Cloudflare CASB
+Cloudflare CDS Compute Account
+Cloudflare DEX
+Cloudflare Images
+Cloudflare One Connector: cloudflared
+Cloudflare One Connector: WARP
+Cloudflare One Connectors
+Cloudflare One Networks
+Cloudflare Pages
+Cloudflare Tunnel
+Cloudflare WAN
+Cloudforce One
+Connectivity Directory
+Constellation
+Containers
+D1
+DDoS Botnet Feed
+DDoS Protection
+Disable ESC
+DNS Firewall
+DNS Settings
+DNS Views
+Email Routing Addresses
+Email Security
+Email Sending
+Firewall policy
+Firewall Policy Packet Captures
+HTTP Applications
+Hyperdrive
+Intel
+IOT
+IP Prefixes
+IP Prefixes: BGP On Demand
+L3/4 DDoS Managed Ruleset
+Load Balancing: Account Load Balancers
+Load Balancing: Monitors And Pools
+Logs
+Magic Transit
+MCP Portals
+Network flow
+Notifications
+Pub/Sub
+Queues
+Radar
+Realtime
+Registrar: Domains
+Rule Policies
+SCIM Provisioning
+Secrets Store
+Select Configuration
+SSO Connector
+Stream
+Transform Rules
+Trust and Safety
+Turnstile
+URL Scanner
+Vectorize
+Workers Agents Configuration
+Workers AI
+Workers Builds Configuration
+Workers KV Storage
+Workers Observability
+Workers Pipelines
+Workers R2 Data Catalog
+Workers R2 SQL
+Workers R2 Storage
+Workers Scripts
+Workers Tail
+Zero Trust
+Zero Trust Resilience
+Zero Trust: PII
+Zero Trust: Seats

@@ -1,0 +1,80 @@
+uilding a scalable, paid service that provides sandboxed OpenClaw environments requires weaving together Cloudflare’s newest primitives: Dynamic Workers (Isolates) for the sandbox, Durable Objects for agent state, and Stripe for the billing layer.This architecture moves away from the old "one-container-per-user" model and toward a "one-isolate-per-task" model, which is 100x faster and infinitely more scalable.1. The High-Level ArchitectureTo build a "Terminal-as-a-Service" for AI agents, follow this 3-tier system:LayerTechnologyResponsibilityFrontendNext.js + xterm.jsTerminal UI & User Dashboard.Control PlaneWorkers + D1 + StripePayments, User Auth, and "Waking up" agents.Agent PlaneDurable Objects (Agents SDK)The "Soul" of the agent. Manages long-term memory.Sandbox PlaneDynamic Workers (LOADER)The "Body." Executes OpenClaw code in parallel.2. Setting Up the "Control Plane" (Billing & Auth)Your users need to pay before they can spawn agents. Use Cloudflare D1 to track their status.Stripe Webhook (Worker)When a user pays, Stripe sends a webhook. Your Worker updates the D1 database to "enable" the user's agent.JavaScript// src/billing.js
+export default {
+  async fetch(request, env) {
+    const signature = request.headers.get("stripe-signature");
+    const body = await request.text();
+    const event = await stripe.webhooks.constructEventAsync(body, signature, env.STRIPE_SECRET);
+
+    if (event.type === "checkout.session.completed") {
+      const customerId = event.data.object.customer;
+      // Update D1: Mark user as "Active"
+      await env.DB.prepare("UPDATE users SET plan = 'pro' WHERE stripe_id = ?")
+        .bind(customerId).run();
+    }
+    return new Response("OK");
+  }
+}
+3. The "Agent Plane" (Persistent Memory)Instead of a simple Worker, use the Cloudflare Agents SDK. This ensures each user has a dedicated "Agent" that never forgets its history, even if the sandbox is destroyed.JavaScript// src/agent.ts
+import { Agent } from "@cloudflare/agents";
+
+export class OpenClawAgent extends Agent {
+  async onConnect(connection) {
+    // Check D1 for subscription before allowing connection
+    const user = await this.env.DB.prepare("SELECT plan FROM users WHERE id = ?")
+      .bind(this.id).first();
+    
+    if (user.plan !== 'pro') {
+      connection.close(1008, "Subscription Required");
+    }
+  }
+
+  async runTask(taskDescription) {
+    // Spin up a Dynamic Worker Sandbox for THIS specific task
+    const sandbox = await this.env.LOADER.load({
+      mainModule: "openclaw.js",
+      modules: { "openclaw.js": OPENCLAW_CORE_LOGIC },
+      env: { 
+        ANTHROPIC_KEY: this.env.ANTHROPIC_KEY,
+        AGENT_ID: this.id 
+      }
+    });
+
+    return await sandbox.getEntrypoint().fetch(new Request("http://exec/", {
+      method: "POST", body: JSON.stringify({ task: taskDescription })
+    }));
+  }
+}
+4. The "Sandbox Plane" (Executing OpenClaw)This is the part mentioned in the March 24, 2026 blog post. In your wrangler.toml, you must bind the LOADER.Ini, TOML# wrangler.toml
+[[worker_loaders]]
+binding = "LOADER"
+
+[durable_objects]
+bindings = [{name = "AGENTS", class_name = "OpenClawAgent"}]
+The "Dynamic" OpenClaw CodeThe OPENCLAW_CORE_LOGIC string passed to the loader should contain the minimized version of the OpenClaw engine. Because it runs in a V8 Isolate, it starts in <10ms.JavaScript// This is what runs INSIDE the sandbox
+export default {
+  async fetch(request, env) {
+    const { task } = await request.json();
+    // 1. Initialize OpenClaw logic
+    // 2. Use env.AI or tool-calling to execute
+    // 3. Return result to the Durable Object
+    return new Response(JSON.stringify({ status: "success", output: "..." }));
+  }
+}
+5. Building the Terminal UIFor a "Terminal" feel, use xterm.js on your website. Use the @cloudflare/sandbox/xterm addon to connect directly to the Agent's WebSocket.JavaScript// Frontend (React)
+import { Terminal } from "@xterm/xterm";
+import { SandboxAddon } from "@cloudflare/sandbox/xterm";
+
+const term = new Terminal();
+const addon = new SandboxAddon({
+  getWebSocketUrl: async () => {
+    // Fetch the signed URL from your Orchestrator Worker
+    const resp = await fetch("/api/get-agent-session");
+    const { url } = await resp.json();
+    return url;
+  }
+});
+
+term.loadAddon(addon);
+term.open(document.getElementById("terminal"));
+addon.connect({ sandboxId: "user-agent-123" });
+6. How to Scale to "Parallel Agents"Since you are using env.LOADER.load(), your Agent (Durable Object) can spawn multiple sandboxes at once.User Command: "Analyze these 5 files."Durable Object: Calls env.LOADER.load() 5 times in parallel.Result: 5 separate V8 Isolates spin up instantly, process one file each, and return the data to the "Master Agent" for final synthesis.Security ChecklistNetwork Isolation: Set globalOutbound: null in your .load() call to prevent agents from accessing your internal network.Resource Limits: Use the usageModel: "standard" to ensure agents don't run away with CPU time.Cloudflare Access: Wrap your /api/ endpoints in Cloudflare Zero Trust so only logged-in users can even talk to their Durable Object.

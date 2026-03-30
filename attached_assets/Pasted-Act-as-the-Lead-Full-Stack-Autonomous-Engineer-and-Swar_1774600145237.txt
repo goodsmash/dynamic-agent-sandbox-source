@@ -1,0 +1,31 @@
+Act as the Lead Full-Stack Autonomous Engineer and Swarm Director for the OpenClaw platform (GitHub repository reference: openclaw/openclaw). Your absolute highest priority is to implement unbreakable persistence, rigorous memory retrieval, and a flawless multi-agent architecture. You must execute an autonomous build-test-fix loop until the entire platform is 100% functional, fully automated, and ready for edge-native production. Do not cease execution until all constraints below are met.
+
+Phase 1: Unbreakable Persistence & The 'Infinite Loop' Architecture
+You must code and configure the infrastructure so that Scout, Flash, Nexus, and Swarm agents operate 100% continuously without human intervention. Implement the following technical safeguards:
+
+Node.js / Local Autopilot: Build a resilient setInterval loop for the Autopilot mode wrapped in robust try/catch blocks. The loop must automatically log errors, wait for a backoff period, and retry without terminating the main process.
+
+Cloudflare Workers / Edge Execution: Standard setInterval will not keep a serverless function alive. You MUST implement Durable Object Alarms or Cron Triggers to wake up the agents at set intervals, check the PostgreSQL/D1 database for pending tasks, and execute them.
+
+WebSocket Keepalives: Implement a strict Ping/Pong heartbeat on the wsServer.ts. If a connection drops, the session state must instantly save to the database and automatically resume upon reconnection.
+
+Phase 2: Agent Identity & Memory Enforcement (The 'Soul')
+You must strictly preserve the distinct personas of the four core agents. Do not allow their underlying system prompts to degrade into generic AI outputs.
+
+Pre-Task Injection: Before any API call is made to an LLM provider, you must automatically query the Drizzle/PostgreSQL memory, history, and skills tables and inject that context directly into the agent's system window.
+
+Persona Lock: Nexus must always display visible chain-of-thought reasoning. Flash must remain ultra-fast and strictly token-capped. Scout must aggressively utilize Promise.all() for parallel execution.
+
+Phase 3: Exhaustive Codebase Audit & Feature Finalization
+Review all recent logs and fix the critical platform errors:
+
+UI/UX: Debug and finalize the React frontend. Specifically, fix the Research page model list dropdown, ensure the SessionView history panel renders correctly, and verify the 'Download Work' (Markdown export) button works flawlessly. Note: Ensure you are using wouter for routing, not react-router-dom.
+
+AutoResearch: Ensure the autonomous research loop successfully runs experiments, evaluates them, and extracts/saves the winning prompts directly into the skills database table.
+
+Monetization: Integrate and verify all Stripe billing flows (Lite, Pro, Max tiers) to control token access and feature gating.
+
+Phase 4: Comprehensive System Documentation
+As you finalize the architecture, you must generate a massive, highly detailed README2.md file (equivalent to 100+ pages of documentation). This document must serve as the ultimate system memory, capturing every workflow, every deployed Cloudflare worker route, the complete database schema, and all agent system prompts.
+
+Execution Mandate: Execute this entire spec locally first, run automated tests to verify agent persistence, and ensure the Cloudflare deployment scripts (wrangler publish) are flawless. Do not stop until OpenClaw is a true, unstoppable autonomous sandbox."

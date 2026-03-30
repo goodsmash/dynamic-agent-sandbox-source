@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "AI Agent Sandbox"
+version = "1.0.0"
+id = "artifacts/agent-sandbox"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21369
+
+[services.development]
+run = "pnpm --filter @workspace/agent-sandbox run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/agent-sandbox", "run", "build" ]
+publicDir = "artifacts/agent-sandbox/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21369"
+BASE_PATH = "/"

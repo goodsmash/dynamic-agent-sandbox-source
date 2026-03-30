@@ -1,0 +1,111 @@
+{
+  /**
+   * OpenClaw Platform — Cloudflare Workers Config
+   *
+   * Requires:
+   *   wrangler >= 4.19.0
+   *   compatibility_date: 2026-03-24  (required for Dynamic Workers LOADER)
+   *
+   * Setup (run once before deploy):
+   *   1. wrangler d1 create openclaw_users
+   *      → paste the database_id into d1_databases[0].database_id below
+   *   2. npm run d1:migrate
+   *   3. wrangler secret put STRIPE_SECRET
+   *   4. wrangler secret put STRIPE_WEBHOOK_SECRET
+   *   5. wrangler secret put ANTHROPIC_API_KEY  (optional — Workers AI works without it)
+   *   6. wrangler deploy
+   */
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "openclaw-platform",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-24",
+  "compatibility_flags": ["nodejs_compat"],
+
+  /**
+   * Static frontend assets (if you put a built React app in ./public)
+   * Comment out if serving frontend separately.
+   */
+  // "assets": {
+  //   "directory": "./public",
+  //   "not_found_handling": "single-page-application",
+  //   "run_worker_first": ["/api/*", "/agents/*", "/ws/*"]
+  // },
+
+  /**
+   * Cloudflare Workers AI — 100+ models, no API keys needed.
+   * "remote: true" uses the real AI models on Cloudflare's network
+   * even in local wrangler dev.
+   */
+  "ai": {
+    "binding": "AI",
+    "remote": true
+  },
+
+  /**
+   * Durable Objects — OpenClawAgent is the agent's "soul".
+   * Each agent instance gets its own SQLite database for persistent memory.
+   * new_sqlite_classes enables the internal SQLite storage API.
+   */
+  /**
+   * IMPORTANT: The binding "name" MUST match the class name exactly.
+   * routeAgentRequest() from the "agents" package looks up env[className]
+   * to route /agents/:className/:instanceId WebSocket connections.
+   */
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "OpenClawAgent",
+        "class_name": "OpenClawAgent"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["OpenClawAgent"]
+    }
+  ],
+
+  /**
+   * D1 — serverless SQLite for users, billing, and session metadata.
+   * IMPORTANT: Replace database_id with your real D1 database ID.
+   * Run: wrangler d1 create openclaw_users
+   */
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "openclaw_users",
+      "database_id": "YOUR_D1_DATABASE_ID_HERE"
+    }
+  ],
+
+  /**
+   * Dynamic Workers — LOADER binding lets OpenClawAgent spawn fresh V8
+   * isolates on-demand using env.LOADER.load(). Each isolate:
+   *   - Has a fresh memory heap (<5ms cold start)
+   *   - Is completely isolated from the parent Worker
+   *   - Can be given specific bindings (AI, RPC stubs)
+   *   - Can have network access blocked (globalOutbound: null)
+   */
+  "worker_loaders": [
+    {
+      "binding": "LOADER"
+    }
+  ],
+
+  /**
+   * Environment variables (non-secret, set in vars)
+   * Secrets (STRIPE_SECRET, etc.) are set via: wrangler secret put
+   */
+  "vars": {
+    "ENVIRONMENT": "production",
+    "APP_URL": "https://openclaw-platform.YOUR-ACCOUNT.workers.dev"
+  },
+
+  /**
+   * Observability — captures logs and metrics in Cloudflare dashboard
+   */
+  "observability": {
+    "enabled": true
+  }
+}

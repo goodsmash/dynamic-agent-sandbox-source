@@ -1,0 +1,414 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: AI Agent Sandbox Platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: sessions
+    description: Agent session management
+  - name: tasks
+    description: Task management within sessions
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /sessions:
+    get:
+      operationId: listSessions
+      tags: [sessions]
+      summary: List all agent sessions
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AgentSession"
+    post:
+      operationId: createSession
+      tags: [sessions]
+      summary: Create a new agent session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionRequest"
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentSession"
+
+  /sessions/{sessionId}:
+    get:
+      operationId: getSession
+      tags: [sessions]
+      summary: Get a specific agent session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentSession"
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteSession
+      tags: [sessions]
+      summary: Delete an agent session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Session deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sessions/{sessionId}/execute:
+    post:
+      operationId: executeCommand
+      tags: [sessions]
+      summary: Execute a command in the sandboxed session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExecuteCommandRequest"
+      responses:
+        "200":
+          description: Command result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommandResult"
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sessions/{sessionId}/tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      summary: List tasks for a session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AgentTask"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Create and dispatch a parallel task
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTaskRequest"
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentTask"
+
+  /sessions/{sessionId}/tasks/{taskId}:
+    get:
+      operationId: getTask
+      tags: [tasks]
+      summary: Get a specific task
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentTask"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sessions/{sessionId}/history:
+    get:
+      operationId: getSessionHistory
+      tags: [sessions]
+      summary: Get command history for a session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Command history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HistoryEntry"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+        - message
+
+    AgentSession:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum: [initializing, active, idle, terminated]
+        createdAt:
+          type: string
+          format: date-time
+        lastActiveAt:
+          type: string
+          format: date-time
+        model:
+          type: string
+        taskCount:
+          type: integer
+        memoryUsage:
+          type: number
+        plan:
+          type: string
+          enum: [free, pro]
+      required:
+        - id
+        - name
+        - status
+        - createdAt
+        - lastActiveAt
+        - model
+        - taskCount
+        - memoryUsage
+        - plan
+
+    CreateSessionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        model:
+          type: string
+      required:
+        - name
+
+    ExecuteCommandRequest:
+      type: object
+      properties:
+        command:
+          type: string
+        streaming:
+          type: boolean
+      required:
+        - command
+
+    CommandResult:
+      type: object
+      properties:
+        output:
+          type: string
+        exitCode:
+          type: integer
+        executionTimeMs:
+          type: number
+        sessionId:
+          type: string
+        taskId:
+          type: string
+      required:
+        - output
+        - exitCode
+        - executionTimeMs
+        - sessionId
+
+    AgentTask:
+      type: object
+      properties:
+        id:
+          type: string
+        sessionId:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, completed, failed]
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        output:
+          type: string
+          nullable: true
+        isolateId:
+          type: string
+        executionTimeMs:
+          type: number
+          nullable: true
+      required:
+        - id
+        - sessionId
+        - description
+        - status
+        - createdAt
+        - isolateId
+
+    CreateTaskRequest:
+      type: object
+      properties:
+        description:
+          type: string
+        parallel:
+          type: boolean
+      required:
+        - description
+
+    HistoryEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        sessionId:
+          type: string
+        command:
+          type: string
+        output:
+          type: string
+        exitCode:
+          type: integer
+        executedAt:
+          type: string
+          format: date-time
+        executionTimeMs:
+          type: number
+      required:
+        - id
+        - sessionId
+        - command
+        - output
+        - exitCode
+        - executedAt
+        - executionTimeMs

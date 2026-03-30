@@ -1,0 +1,29 @@
+{
+  "name": "openclaw-platform",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --remote",
+    "dev:local": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "d1:create": "wrangler d1 create openclaw_users",
+    "d1:migrate": "wrangler d1 migrations apply openclaw_users --remote",
+    "d1:migrate:local": "wrangler d1 migrations apply openclaw_users --local",
+    "cf-typegen": "wrangler types",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "agents": "^0.0.62",
+    "@cloudflare/ai-chat": "latest",
+    "workers-ai-provider": "^1.0.0",
+    "ai": "^4.3.16",
+    "hono": "^4.7.0",
+    "stripe": "^17.7.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260324.0",
+    "typescript": "~5.9.0",
+    "wrangler": "^4.19.0"
+  }
+}
